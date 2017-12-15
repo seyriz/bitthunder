@@ -1,5 +1,6 @@
 #include <bitthunder.h>
 #include <FreeRTOS.h>
+#include <event_groups.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>

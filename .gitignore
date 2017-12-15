@@ -5,6 +5,8 @@ build
 *.list
 *.map
 *.bak
+*.exports
+*.syms
 
 # Kconfig
 .config
@@ -35,6 +37,14 @@ os/src/shell/jimtcl/__Previews/
 os/src/shell/jimtcl/examples/__Previews/
 os/src/shell/jimtcl/tools/__Previews/
 
+# Python Intermediates
+*.pyc
+*.pyo
+
 .DS_Store
 
 \.vscode-upload\.json
+
+\.dbuild/scripts/mkconfig/mkconfig\.d
+
+\.dbuild/scripts/mkconfig/mkconfig\.osx
