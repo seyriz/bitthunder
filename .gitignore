@@ -44,3 +44,7 @@ os/src/shell/jimtcl/tools/__Previews/
 .DS_Store
 
 \.vscode-upload\.json
+
+\.dbuild/scripts/mkconfig/mkconfig\.d
+
+\.dbuild/scripts/mkconfig/mkconfig\.osx
