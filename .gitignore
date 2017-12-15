@@ -37,6 +37,10 @@ os/src/shell/jimtcl/__Previews/
 os/src/shell/jimtcl/examples/__Previews/
 os/src/shell/jimtcl/tools/__Previews/
 
+# Python Intermediates
+*.pyc
+*.pyo
+
 .DS_Store
 
 \.vscode-upload\.json
