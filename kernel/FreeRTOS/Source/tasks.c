@@ -274,6 +274,13 @@ typedef struct tskTaskControlBlock
 		xMPU_SETTINGS	xMPUSettings;		/*< The MPU settings are defined as part of the port layer.  THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
 	#endif
 
+	#if ( configBITTHUNDER == 1 )
+	#ifdef BT_CONFIG_USE_VIRTUAL_ADDRESSING
+	volatile StackType_t	*pxTopOfKernelStack;
+	volatile StackType_t	*pxKernelStack;
+	#endif
+	#endif
+
 	ListItem_t			xStateListItem;	/*< The list that the state list item of a task is reference from denotes the state of that task (Ready, Blocked, Suspended ). */
 	ListItem_t			xEventListItem;		/*< Used to reference a task from an event list. */
 	UBaseType_t			uxPriority;			/*< The priority of the task.  0 is the lowest priority. */
@@ -832,6 +839,12 @@ static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
 StackType_t *pxTopOfStack;
 UBaseType_t x;
 
+#if (configBITTHUNDER == 1)
+		#ifdef BT_CONFIG_USE_VIRTUAL_ADDRESSING
+		StackType_t *pxTopOfKernelStack;
+		#endif
+		#endif
+		
 	#if( portUSING_MPU_WRAPPERS == 1 )
 		/* Should the task be created in privileged mode? */
 		BaseType_t xRunPrivileged;
@@ -865,6 +878,14 @@ UBaseType_t x;
 
 		/* Check the alignment of the calculated top of stack is correct. */
 		configASSERT( ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack & ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) == 0UL ) );
+
+		#if (configBITTHUNDER == 1)
+			#ifdef BT_CONfIG_USE_VIRTUAL_ADDRESSSING
+			pxTopOfKernelStack = pxNewTCB->pxKernelStack + ((BT_PAGE_SIZE / sizeof(StackType_t)) - 1);
+			pxTopOfKernelStack = (StackType_t *) (((portPOINTER_SIZE_TYPE) pxTopOfKernelStack) & ((portPOINTER_SIZE_TYPE) ~portBYTE_ALIGNMENT_MASK));
+			pxNewTCB->pxTopOfKernelStack = pxTopOfKernelStack;
+			#endif
+			#endif
 
 		#if( configRECORD_STACK_HIGH_ADDRESS == 1 )
 		{
@@ -2903,6 +2924,15 @@ void vTaskSwitchContext( void )
 			_impure_ptr = &( pxCurrentTCB->xNewLib_reent );
 		}
 		#endif /* configUSE_NEWLIB_REENTRANT */
+
+		#if (configBITTHUNDER == 1)
+		curthread = (struct bt_thread *) pxCurrentTCB->pxTaskTag;
+		#ifdef BT_CONFIG_USE_VIRTUAL_ADDRESSING
+		if(curthread) {
+			bt_mmu_switch(curtask->map->pgd);
+		}
+		#endif
+		#endif
 	}
 }
 /*-----------------------------------------------------------*/

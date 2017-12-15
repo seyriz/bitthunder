@@ -5,6 +5,8 @@ build
 *.list
 *.map
 *.bak
+*.exports
+*.syms
 
 # Kconfig
 .config

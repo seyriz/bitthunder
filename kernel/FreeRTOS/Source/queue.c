@@ -107,6 +107,11 @@ typedef struct QueueDefinition
 
 	volatile int8_t cRxLock;		/*< Stores the number of items received from the queue (removed from the queue) while the queue was locked.  Set to queueUNLOCKED when the queue is not locked. */
 	volatile int8_t cTxLock;		/*< Stores the number of items transmitted to the queue (added to the queue) while the queue was locked.  Set to queueUNLOCKED when the queue is not locked. */
+	
+	#if ( configUSE_TRACE_FACILITY == 1 )
+		UBaseType_t uxQueueNumber;
+		uint8_t ucQueueType;
+	#endif
 
 	#if( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 		uint8_t ucStaticallyAllocated;	/*< Set to pdTRUE if the memory used by the queue was statically allocated to ensure no attempt is made to free the memory. */
@@ -717,6 +722,7 @@ static void prvInitialiseNewQueue( const UBaseType_t uxQueueLength, const UBaseT
 			traceCREATE_COUNTING_SEMAPHORE_FAILED();
 		}
 
+		configASSERT( xHandle );
 		return xHandle;
 	}
 
